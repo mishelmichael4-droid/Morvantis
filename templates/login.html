@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Mina Mishel</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .login-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-card {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .login-card h2 {
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        .error-msg {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .login-form .form-group {
+            text-align: left;
+        }
+        .login-form .btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <section class="login-section">
+        <div class="login-card">
+            <h2><i class="fas fa-lock"></i> Admin Access</h2>
+            {% if error %}
+            <div class="error-msg">{{ error }}</div>
+            {% endif %}
+            <form action="{{ url_for('login') }}" method="POST" class="login-form">
+                <div class="form-group">
+                    <input type="password" name="password" required placeholder="Enter Secret Password">
+                </div>
+                <button type="submit" class="btn btn-primary">Login <i class="fas fa-sign-in-alt"></i></button>
+                <div style="margin-top: 1.5rem;">
+                    <a href="/" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;"><i class="fas fa-arrow-left"></i> Back to Site</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mina Mishel | Morvantis Dashboard</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='mm_logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .dashboard-section {
+            padding: 8rem 0 4rem;
+            min-height: 100vh;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .dashboard-title {
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
+        /* ---- Stats Bar ---- */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.blue  { background: rgba(59,130,246,0.15); color: #3b82f6; }
+        .stat-icon.red   { background: rgba(239,68,68,0.15);  color: #ef4444; }
+        .stat-icon.green { background: rgba(16,185,129,0.15); color: #10b981; }
+        .stat-info span  { display: block; font-size: 0.85rem; color: var(--text-secondary); }
+        .stat-info strong{ display: block; font-size: 1.75rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+
+        /* ---- Tabs ---- */
+        .tabs-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .tab-btn {
+            padding: 0.65rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .tab-btn:hover { color: var(--text-primary); background: var(--bg-secondary); }
+        .tab-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background: var(--bg-secondary); }
+        .tab-badge {
+            font-size: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 0.1rem 0.5rem;
+            font-weight: 600;
+        }
+        .tab-btn.active .tab-badge { background: var(--accent-primary); color: #fff; border-color: var(--accent-primary); }
+
+        /* ---- Tab Panels ---- */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ---- Message Cards ---- */
+        .messages-container { display: grid; gap: 1.5rem; }
+        .message-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-fast), border-color var(--transition-fast);
+        }
+        .message-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-primary); }
+        .message-card.blocked { border-color: #ef4444; }
+        .message-card.blocked:hover { border-color: #ef4444; }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .sender-info strong { display: block; font-size: 1.2rem; color: var(--accent-primary); }
+        .sender-info span   { color: var(--text-secondary); font-size: 0.9rem; }
+        .message-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            background: var(--bg-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            height: fit-content;
+        }
+        .message-phone { font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .message-body  { color: var(--text-secondary); white-space: pre-wrap; line-height: 1.6; }
+
+        /* ---- Empty State ---- */
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px dashed var(--border-color);
+            color: var(--text-secondary);
+        }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+        /* ---- Done Card ---- */
+        .done-card {
+            border-color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.06) !important;
+        }
+
+        /* ---- Status Badges ---- */
+        .status-badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+            margin-right: 0.4rem;
+            vertical-align: middle;
+        }
+        .status-badge.new  { background: rgba(59,130,246,0.15); color: #3b82f6; }
+        .status-badge.done { background: rgba(16,185,129,0.15); color: #10b981; }
+
+        /* ---- Action Buttons ---- */
+        .btn-status {
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.3rem 0.9rem;
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+        }
+        .done-btn   { background: rgba(16,185,129,0.15); color: #10b981; }
+        .done-btn:hover   { background: #10b981; color: #fff; }
+        .undone-btn { background: rgba(239,68,68,0.12); color: #ef4444; }
+        .undone-btn:hover { background: #ef4444; color: #fff; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo logo-text">
+                <img src="{{ url_for('static', filename='mm_logo_transparent.png') }}" alt="Golden M Logo" class="site-logo">
+                <span class="logo-nexus">.Morvantis</span>
+            </a>
+            <nav class="nav-links" style="display:flex; gap:1rem;">
+                <a href="/" class="btn btn-outline" style="padding:0.5rem 1rem;">Back to Site</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-primary" style="padding:0.5rem 1rem; background-color:#ef4444; border-color:#ef4444;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="dashboard-section">
+            <div class="container">
+
+                <!-- Page Title -->
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div style="padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-md); background: {% if category == 'error' %}rgba(239,68,68,0.1){% else %}rgba(16,185,129,0.1){% endif %}; color: {% if category == 'error' %}#ef4444{% else %}#10b981{% endif %}; border: 1px solid {% if category == 'error' %}#ef4444{% else %}#10b981{% endif %};">
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Stats Bar -->
+                <div class="stats-bar">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-inbox"></i></div>
+                        <div class="stat-info">
+                            <span>Total Messages</span>
+                            <strong>{{ messages|length }}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-ban"></i></div>
+                        <div class="stat-info">
+                            <span>Blocked Users</span>
+                            <strong>{{ blocked_ips|length }}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-shield-alt"></i></div>
+                        <div class="stat-info">
+                            <span>Security Status</span>
+                            <strong style="font-size:1rem; color:#10b981;">Active</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs-wrapper">
+                    <button class="tab-btn active" onclick="switchTab('messages', this)">
+                        <i class="fas fa-envelope"></i> Inbox
+                        <span class="tab-badge">{{ messages|length }}</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('blocked', this)">
+                        <i class="fas fa-ban"></i> Blocked Users
+                        <span class="tab-badge">{{ blocked_ips|length }}</span>
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('settings', this)">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+
+                <!-- Tab: Messages -->
+                <div id="tab-messages" class="tab-panel active">
+                    <div style="margin-bottom: 1.5rem;">
+                        <input type="text" id="searchInput" placeholder="Search by name or email..." onkeyup="filterMessages()" style="width: 100%; max-width: 400px; padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-primary);">
+                    </div>
+                    <div class="messages-container">
+                        {% if messages %}
+                            {% for msg in messages %}
+                            <div class="message-card {% if msg.status == 'done' %}done-card{% endif %}">
+                                <div class="message-header">
+                                    <div class="sender-info">
+                                        <strong>
+                                            {{ msg.name }}
+                                            {% if msg.status == 'done' %}
+                                            <span class="status-badge done">✔ خلصنا</span>
+                                            {% else %}
+                                            <span class="status-badge new">● جديد</span>
+                                            {% endif %}
+                                        </strong>
+                                        <span><i class="fas fa-envelope"></i> <a href="mailto:{{ msg.email }}">{{ msg.email }}</a></span>
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
+                                        <div class="message-date">
+                                            <i class="fas fa-clock"></i> {{ msg.timestamp }}
+                                        </div>
+                                        {% if msg.status == 'done' %}
+                                        <form action="{{ url_for('mark_undone', msg_id=msg.id) }}" method="POST" style="margin:0;">
+                                            <button type="submit" class="btn-status undone-btn">↩ رجّع كجديد</button>
+                                        </form>
+                                        {% else %}
+                                        <form action="{{ url_for('mark_done', msg_id=msg.id) }}" method="POST" style="margin:0;">
+                                            <button type="submit" class="btn-status done-btn">✔ خلصنا</button>
+                                        </form>
+                                        {% endif %}
+                                        <form action="{{ url_for('delete_message', msg_id=msg.id) }}" method="POST" style="margin:0;" onsubmit="return confirm('هل أنت متأكد من حذف هذه الرسالة نهائياً؟');">
+                                            <button type="submit" class="btn-status undone-btn" style="background:transparent; border:1px solid #ef4444; color:#ef4444; margin-top:0.3rem;"><i class="fas fa-trash"></i> حذف</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% if msg.phone %}
+                                <div class="message-phone">
+                                    <i class="fas fa-phone"></i> {{ msg.phone }}
+                                </div>
+                                {% endif %}
+                                <div class="message-body">{{ msg.message }}</div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-envelope-open"></i>
+                                <h3>No messages yet</h3>
+                                <p>When someone submits the contact form, it will appear here.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Tab: Blocked Users -->
+                <div id="tab-blocked" class="tab-panel">
+                    <div class="messages-container">
+                        {% if blocked_ips %}
+                            {% for block in blocked_ips %}
+                            <div class="message-card blocked">
+                                <div class="message-header" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">
+                                    <div class="sender-info">
+                                        <strong style="color:#ef4444;"><i class="fas fa-user-slash"></i> IP: {{ block.ip_address }}</strong>
+                                        <span>Reason: {{ block.reason }}</span>
+                                    </div>
+                                    <div style="display:flex; gap:1rem; align-items:center;">
+                                        <div class="message-date">
+                                            <i class="fas fa-clock"></i> {{ block.timestamp }}
+                                        </div>
+                                        <form action="{{ url_for('unblock', ip=block.ip_address) }}" method="POST" style="margin:0;">
+                                            <button type="submit" class="btn btn-primary" style="background-color:#10b981; border-color:#10b981; padding:0.25rem 1rem; font-size:0.9rem;">
+                                                Unblock <i class="fas fa-unlock"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-shield-alt" style="color:#10b981;"></i>
+                                <h3>No blocked users</h3>
+                                <p>Your site is clean — no spammers detected.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Tab: Settings -->
+                <div id="tab-settings" class="tab-panel">
+                    <div class="message-card" style="max-width: 500px; margin: 0 auto;">
+                        <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);"><i class="fas fa-key"></i> Change Password</h2>
+                        <form action="{{ url_for('change_password') }}" method="POST" class="contact-form" style="box-shadow: none; padding: 0; border: none; background: transparent;">
+                            <div class="form-group">
+                                <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">Current Password</label>
+                                <input type="password" name="current_password" required style="width:100%; padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                            </div>
+                            <div class="form-group">
+                                <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">New Password</label>
+                                <input type="password" name="new_password" required style="width:100%; padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function filterMessages() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.querySelectorAll('#tab-messages .message-card');
+            
+            cards.forEach(card => {
+                let name = card.querySelector('.sender-info strong').textContent.toLowerCase();
+                let email = card.querySelector('.sender-info span a') ? card.querySelector('.sender-info span a').textContent.toLowerCase() : '';
+                
+                if(name.includes(input) || email.includes(input)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
