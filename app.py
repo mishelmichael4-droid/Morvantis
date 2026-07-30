@@ -72,7 +72,7 @@ class DB:
             # Convert parameter placeholders from ? to %s
             query = query.replace('?', '%s')
             # Convert SQLite AUTOINCREMENT to Postgres SERIAL
-            query = query.replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'SERIAL KEY')
+            query = query.replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'SERIAL PRIMARY KEY')
         return query
 
 def init_db():
