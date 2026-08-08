@@ -76,47 +76,50 @@ class DB:
         return query
 
 def init_db():
-    with DB.get_cursor() as (c, is_pg):
-        c.execute(DB.fix_query('''
-            CREATE TABLE IF NOT EXISTS messages (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                phone TEXT,
-                message TEXT NOT NULL,
-                status TEXT DEFAULT 'new',
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''', is_pg))
-        
-        # Add status column if upgrading from old DB
-        try:
-            c.execute(DB.fix_query('ALTER TABLE messages ADD COLUMN status TEXT DEFAULT \'new\'', is_pg))
-        except Exception:
-            pass
+    try:
+        with DB.get_cursor() as (c, is_pg):
+            c.execute(DB.fix_query('''
+                CREATE TABLE IF NOT EXISTS messages (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    phone TEXT,
+                    message TEXT NOT NULL,
+                    status TEXT DEFAULT 'new',
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''', is_pg))
+            
+            # Add status column if upgrading from old DB
+            try:
+                c.execute(DB.fix_query('ALTER TABLE messages ADD COLUMN status TEXT DEFAULT \'new\'', is_pg))
+            except Exception:
+                pass
 
-        c.execute(DB.fix_query('''
-            CREATE TABLE IF NOT EXISTS blocked_ips (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                ip_address TEXT UNIQUE,
-                reason TEXT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''', is_pg))
+            c.execute(DB.fix_query('''
+                CREATE TABLE IF NOT EXISTS blocked_ips (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ip_address TEXT UNIQUE,
+                    reason TEXT,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''', is_pg))
 
-        c.execute(DB.fix_query('''
-            CREATE TABLE IF NOT EXISTS admin (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE,
-                password_hash TEXT
-            )
-        ''', is_pg))
-        
-        # Default admin user
-        c.execute(DB.fix_query('SELECT * FROM admin WHERE username = ?', is_pg), ('admin',))
-        if not c.fetchone():
-            hashed = generate_password_hash('mina')
-            c.execute(DB.fix_query('INSERT INTO admin (username, password_hash) VALUES (?, ?)', is_pg), ('admin', hashed))
+            c.execute(DB.fix_query('''
+                CREATE TABLE IF NOT EXISTS admin (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE,
+                    password_hash TEXT
+                )
+            ''', is_pg))
+            
+            # Default admin user
+            c.execute(DB.fix_query('SELECT * FROM admin WHERE username = ?', is_pg), ('admin',))
+            if not c.fetchone():
+                hashed = generate_password_hash('mina')
+                c.execute(DB.fix_query('INSERT INTO admin (username, password_hash) VALUES (?, ?)', is_pg), ('admin', hashed))
+    except Exception as e:
+        print(f"Failed to initialize database: {e}")
 
 init_db()
 
