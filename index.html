@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mina Mishel | Morvantis</title>
+    <meta name="description"
+        content="Portfolio of Mina Mishel - Morvantis. Building real-world digital solutions and automation systems.">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='mm_logo.png') }}">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo logo-text">
+                <img src="{{ url_for('static', filename='mm_logo_transparent.png') }}" alt="Golden M Logo" class="site-logo">
+                <span class="logo-nexus">.Morvantis</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-links">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <!-- <a href="#projects" class="nav-link">Projects</a> -->
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section">
+            <div class="container hero-content animate-on-scroll">
+                <span class="greeting">Hello, I'm</span>
+                <h1 class="name">Mina Mishel</h1>
+                <h2 class="title">Full Stack Developer</h2>
+                <p class="intro">
+                    I am a passionate Full Stack Developer from Cairo, Egypt, focused on building real-world digital
+                    solutions that improve workflows and solve practical business problems. I enjoy turning ideas into
+                    complete, functional systems that combine clean UI, smart functionality, and real-world value.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">View Projects</a>
+                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">About Me</h2>
+                <div class="about-grid animate-on-scroll">
+                    <div class="about-image">
+                        <div class="profile-img-wrapper">
+                            <img src="{{ url_for('static', filename='images/profilee.png') }}" alt="Mina Mishel" class="profile-img">
+                        </div>
+                    </div>
+                    <div class="about-text">
+                        <p>Mina began his programming journey around 9 months ago and quickly developed a strong passion
+                            for web development, problem-solving, and building practical systems. He enjoys both
+                            frontend and backend development and focuses on creating useful applications instead of
+                            simple showcase projects.</p>
+
+                        <p>He has experience building:</p>
+                        <ul class="about-list">
+                            <li><i class="fas fa-check-circle"></i> Responsive websites</li>
+                            <li><i class="fas fa-check-circle"></i> Automation systems</li>
+                            <li><i class="fas fa-check-circle"></i> Business tools</li>
+                            <li><i class="fas fa-check-circle"></i> Data dashboards</li>
+                            <li><i class="fas fa-check-circle"></i> Workflow integrations</li>
+                        </ul>
+
+                        <p>He enjoys debugging complex issues, analyzing problems step-by-step, and continuously
+                            improving his technical skills. Currently, he is expanding his backend knowledge with Python
+                            while continuing to grow as a Full Stack Developer and work on more advanced real-world
+                            systems.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Strengths Section -->
+        <section id="strengths" class="strengths-section alt-bg">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Core Strengths</h2>
+                <div class="strengths-grid animate-on-scroll">
+                    <div class="strength-card">
+                        <i class="fas fa-brain"></i>
+                        <h3>Problem-Solving Mindset</h3>
+                        <p>Ability to debug and analyze issues methodically step-by-step.</p>
+                    </div>
+                    <div class="strength-card">
+                        <i class="fas fa-cogs"></i>
+                        <h3>Practical Systems</h3>
+                        <p>Passion for building applications with real-world impact.</p>
+                    </div>
+                    <div class="strength-card">
+                        <i class="fas fa-book-open"></i>
+                        <h3>Continuous Learning</h3>
+                        <p>Fast adaptability and eagerness to learn new technologies.</p>
+                    </div>
+                    <div class="strength-card">
+                        <i class="fas fa-desktop"></i>
+                        <h3>UI/UX Focus</h3>
+                        <p>Strong attention to responsive and intuitive design principles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="skills-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Technical Skills</h2>
+                <div class="skills-container animate-on-scroll">
+                    <!-- Frontend -->
+                    <div class="skill-category">
+                        <h3><i class="fas fa-code"></i> Frontend</h3>
+                        <div class="skill-tags">
+                            <span>HTML5</span>
+                            <span>CSS3</span>
+                            <span>JavaScript</span>
+                            <span>Tailwind CSS</span>
+                            <span>Responsive Design</span>
+                            <span>Next.js</span>
+                        </div>
+                    </div>
+
+                    <!-- Backend -->
+                    <div class="skill-category">
+                        <h3><i class="fas fa-server"></i> Backend & Logic</h3>
+                        <div class="skill-tags">
+                            <span>Python</span>
+                            <span>Automation Scripts</span>
+                            <span>Excel Processing Systems</span>
+                            <span>Google Drive API</span>
+                            <span>WhatsApp Integration</span>
+                        </div>
+                    </div>
+
+                    <!-- Tools -->
+                    <div class="skill-category">
+                        <h3><i class="fas fa-tools"></i> Tools & Platforms</h3>
+                        <div class="skill-tags">
+                            <span>Git & GitHub</span>
+                            <span>VS Code</span>
+                            <span>Netlify</span>
+                            <span>Streamlit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section commented out temporarily as requested by the user until links are ready
+        <section id="projects" class="projects-section alt-bg">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Featured Projects</h2>
+                <div class="projects-grid">
+                    <div class="project-card animate-on-scroll">
+                        <div class="project-content">
+                            <h3>Device Valuation & Recommerce Platform</h3>
+                            <p class="project-desc">A web application that allows users to evaluate their used electronics (phones, laptops) to get a fair price estimate before buying or selling, protecting them from market scams.</p>
+                            <ul class="project-features">
+                                <li>Smart valuation algorithm based on device specs & condition</li>
+                                <li>Interactive questionnaire for device health status</li>
+                                <li>Real-time fair market value calculation</li>
+                                <li>Protection guides against common recommerce scams</li>
+                                <li>Fully responsive and intuitive user flow</li>
+                            </ul>
+                            <div class="project-links" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                                <a href="#" class="btn btn-outline" target="_blank" aria-label="View Code"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="#" class="btn btn-primary" target="_blank" aria-label="Live Demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card animate-on-scroll" style="animation-delay: 0.1s;">
+                        <div class="project-content">
+                            <h3>Excel-to-IT Workflow Automation App</h3>
+                            <p class="project-desc">A workflow automation system that processes raw Excel sheets from employees, standardizes data structures automatically, and sends the processed logs straight to the IT department.</p>
+                            <ul class="project-features">
+                                <li>Drag-and-drop Excel file uploader interface</li>
+                                <li>Automatic data cleaning & schema validation</li>
+                                <li>Saves significant manual coordination time</li>
+                                <li>Direct integration with IT department notification systems</li>
+                            </ul>
+                            <div class="project-links" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                                <a href="#" class="btn btn-outline" target="_blank" aria-label="View Code"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="#" class="btn btn-primary" target="_blank" aria-label="Live Demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card animate-on-scroll" style="animation-delay: 0.2s;">
+                        <div class="project-content">
+                            <h3>Premium Personal Brand Platform</h3>
+                            <p class="project-desc">A premium personal branding website designed for content creators and consultants to showcase their expertise, display projects, and capture leads professionally.</p>
+                            <ul class="project-features">
+                                <li>Modern, fast, and SEO-optimized landing layout</li>
+                                <li>Dynamic showcase grids for publications & videos</li>
+                                <li>Interactive contact & consultation booking forms</li>
+                                <li>High-performance web vitals with dark & light theme</li>
+                            </ul>
+                            <div class="project-links" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                                <a href="#" class="btn btn-outline" target="_blank" aria-label="View Code"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="#" class="btn btn-primary" target="_blank" aria-label="Live Demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card animate-on-scroll" style="animation-delay: 0.3s;">
+                        <div class="project-content">
+                            <h3>Engineering Portfolio Website</h3>
+                            <p class="project-desc">A sleek, professional portfolio website designed for a senior structural engineer to present large-scale consulting projects, case studies, and corporate services.</p>
+                            <ul class="project-features">
+                                <li>Dynamic category-based engineering project grids</li>
+                                <li>High-resolution project gallery visualizers</li>
+                                <li>Consultation request forms for corporate clients</li>
+                                <li>Fully responsive, minimal, and premium aesthetic design</li>
+                            </ul>
+                            <div class="project-links" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                                <a href="#" class="btn btn-outline" target="_blank" aria-label="View Code"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="#" class="btn btn-primary" target="_blank" aria-label="Live Demo"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        -->
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Client Testimonials</h2>
+                <div class="testimonials-grid animate-on-scroll">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                            <p>"Honestly, Mina saved us a huge amount of daily boring work. We used to waste hours manually sorting Excel sheets and emailing them back and forth. The tool he built lets anyone drop their Excel files, cleans all the data in a second, and forwards it straight to the IT team. Absolute lifesaver!"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Sherif Amer</h4>
+                                <span>Operations Specialist</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                            <p>"I asked Mina to build a platform where people can value their used phones and laptops before buying or selling so they don't get ripped off. The valuation algorithm he built is incredibly accurate and fast, and the interface is so simple that anyone can use it without getting confused. Really impressive work."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Mostafa Mahmoud</h4>
+                                <span>Tech Platform Founder</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                            <p>"I wanted a personal brand website that feels premium and shows my work in a clean way. Mina did a fantastic job. He didn't just write code; he actually listened to my ideas, suggested better ways to structure the pages, and made the whole process super easy for me. I highly recommend him!"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Dr. Laila Kamel</h4>
+                                <span>Consultant & Creator</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 4 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                            <p>"Mina built my engineering portfolio website. I needed a professional layout to showcase heavy structural projects to corporate clients. He delivered a fast, sleek website that loads perfectly on mobile and desktop. I've already received several compliments from clients about it."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Eng. Tarek Refaat</h4>
+                                <span>Structural Consultant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="experience-section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Experience</h2>
+                <div class="timeline animate-on-scroll">
+                    <!-- Experience 1 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">Present</span>
+                            <h3>Full Stack Developer (Freelance)</h3>
+                            <h4>Independent Projects</h4>
+                            <ul>
+                                <li>Developed custom automation scripts for businesses using Python, significantly
+                                    reducing manual data entry tasks.</li>
+                                <li>Built full-stack e-commerce solutions including the BEKIVO platform, integrating
+                                    modern web technologies with third-party APIs (WhatsApp, Google Drive).</li>
+                                <li>Designed and implemented responsive frontend interfaces focused on modern UX/UI
+                                    principles.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Experience 2 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">Past 9 Months</span>
+                            <h3>Developer Apprentice & Builder</h3>
+                            <h4>Self-Directed Learning & Projects</h4>
+                            <ul>
+                                <li>Rapidly acquired skills in HTML, CSS, JavaScript, and Python through intensive
+                                    project-based learning.</li>
+                                <li>Developed analytical dashboards processing real-world data files into visual
+                                    insights.</li>
+                                <li>Consistently focused on bridging the gap between raw code and practical business
+                                    applications.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="services-section alt-bg">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Services</h2>
+                <div class="services-grid animate-on-scroll">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h3>Full Stack Web Development</h3>
+                        <p>Building responsive, dynamic, and modern web applications tailored to your specific needs.
+                        </p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-robot"></i></div>
+                        <h3>Business Automation Systems</h3>
+                        <p>Creating custom scripts and tools to eliminate repetitive tasks and streamline your
+                            operations.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Dashboard & Analytics</h3>
+                        <p>Transforming complex raw data into clear, interactive, and actionable visual reports.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-project-diagram"></i></div>
+                        <h3>Workflow Integration</h3>
+                        <p>Connecting various platforms (like WhatsApp and Google Drive) to create cohesive digital
+                            ecosystems.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Objective Section -->
+        <section id="objective" class="objective-section">
+            <div class="container animate-on-scroll">
+                <div class="objective-box">
+                    <i class="fas fa-rocket objective-icon"></i>
+                    <h2>Career Objective</h2>
+                    <p class="objective-text">
+                        Mina aims to become a highly skilled Full Stack Engineer capable of building advanced real-world
+                        systems that solve meaningful business problems. He also plans to explore Cyber Security in the
+                        future after strengthening his backend and full stack expertise.
+                    </p>
+                    <div class="objective-goals">
+                        <h3>Key Goals:</h3>
+                        <ul>
+                            <li>Working with real clients and contributing to impactful projects.</li>
+                            <li>Gaining professional industry experience.</li>
+                            <li>Continuously improving technical and problem-solving skills.</li>
+                            <li>Building larger and more advanced systems.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section alt-bg">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll">Get In Touch</h2>
+                <div class="contact-wrapper animate-on-scroll">
+                    <div class="contact-info">
+                        <h3>Let's work together!</h3>
+                        <p>If you have a project in mind, a business problem to solve, or just want to say hi, feel free
+                            to reach out.</p>
+                        <div class="social-links">
+                            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        </div>
+                    </div>
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" required placeholder="Your Name">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" required placeholder="Your Email">
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" name="phone" placeholder="Your Phone Number (Optional)">
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" rows="5" required placeholder="Your Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Send Message <i class="fas fa-paper-plane"></i></button>
+                        <div id="formStatus" style="margin-top: 1rem; text-align: center; font-weight: 500; display: none;"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; <span id="year"></span> Mina Mishel. Debugging real-world problems, compiling solutions.</p>
+            <a href="#hero" class="back-to-top" aria-label="Back to top">
+                <i class="fas fa-arrow-up"></i>
+            </a>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/201272056532" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-badge"></span>
+    </a>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>
