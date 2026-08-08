@@ -1,5 +1,4 @@
 import os
-import sqlite3
 from datetime import datetime, timezone, timedelta
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -72,7 +71,8 @@ class DB:
             # Convert parameter placeholders from ? to %s
             query = query.replace('?', '%s')
             # Convert SQLite AUTOINCREMENT to Postgres SERIAL
-            query = query.replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'SERIAL KEY')
+            query = query.replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'SERIAL PRIMARY KEY')
+            query = query.replace('"admin"', "'admin'")
         return query
 
 def init_db():
