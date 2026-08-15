@@ -166,7 +166,7 @@ def submit():
         return jsonify({'message': 'Success'}), 200
     except Exception as e:
         print(f"Error saving message: {e}")
-        return jsonify({'error': 'Internal server error'}), 500
+        return jsonify({'error': f'Internal server error: {str(e)}'}), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
