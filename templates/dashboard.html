@@ -12,28 +12,149 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
-        .dashboard-section {
-            padding: 8rem 0 4rem;
+        :root {
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* ---- Layout ---- */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
             min-height: 100vh;
         }
-        .dashboard-header {
+
+        /* ---- Sidebar ---- */
+        .sidebar {
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+            transition: transform var(--transition-medium);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            margin-bottom: 3rem;
+        }
+
+        .sidebar-logo {
+            height: 48px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .menu-item:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .menu-item.active {
+            color: #ffffff;
+            background: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .menu-item i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-badge {
+            margin-left: auto;
+            font-size: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.1rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
+        .menu-item.active .menu-badge {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .sidebar-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+
+        /* ---- Main Content ---- */
+        .main-content {
+            padding: 2.5rem;
+            overflow-y: auto;
+            background: var(--bg-primary);
+        }
+
+        .content-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-        }
-        .dashboard-title {
-            font-size: 2rem;
-            color: var(--text-primary);
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        /* ---- Stats Bar ---- */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-secondary);
         }
+
+        /* ---- Stats Grid ---- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -41,66 +162,68 @@
             padding: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast);
         }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
+            width: 54px;
+            height: 54px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             flex-shrink: 0;
         }
-        .stat-icon.blue  { background: rgba(59,130,246,0.15); color: #3b82f6; }
-        .stat-icon.red   { background: rgba(239,68,68,0.15);  color: #ef4444; }
-        .stat-icon.green { background: rgba(16,185,129,0.15); color: #10b981; }
-        .stat-info span  { display: block; font-size: 0.85rem; color: var(--text-secondary); }
-        .stat-info strong{ display: block; font-size: 1.75rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
 
-        /* ---- Tabs ---- */
-        .tabs-wrapper {
-            display: flex;
-            gap: 0.5rem;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 2rem;
-        }
-        .tab-btn {
-            padding: 0.65rem 1.5rem;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
+        .stat-icon.blue   { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .stat-icon.green  { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+        .stat-icon.purple { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+        .stat-icon.red    { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+
+        .stat-details span {
+            display: block;
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            font-size: 1rem;
-            font-family: inherit;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-details strong {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        /* ---- Panels ---- */
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- Messages Container ---- */
+        .messages-container {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            flex-direction: column;
+            gap: 1.5rem;
         }
-        .tab-btn:hover { color: var(--text-primary); background: var(--bg-secondary); }
-        .tab-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); background: var(--bg-secondary); }
-        .tab-badge {
-            font-size: 0.75rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 999px;
-            padding: 0.1rem 0.5rem;
-            font-weight: 600;
-        }
-        .tab-btn.active .tab-badge { background: var(--accent-primary); color: #fff; border-color: var(--accent-primary); }
 
-        /* ---- Tab Panels ---- */
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-
-        /* ---- Message Cards ---- */
-        .messages-container { display: grid; gap: 1.5rem; }
         .message-card {
             background-color: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -109,266 +232,447 @@
             border: 1px solid var(--border-color);
             transition: transform var(--transition-fast), border-color var(--transition-fast);
         }
-        .message-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-primary); }
-        .message-card.blocked { border-color: #ef4444; }
-        .message-card.blocked:hover { border-color: #ef4444; }
+
+        .message-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-primary);
+        }
+
+        .message-card.blocked {
+            border-color: #ef4444;
+        }
+
+        .message-card.done-card {
+            border-color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.03) !important;
+        }
+
         .message-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 1rem;
             flex-wrap: wrap;
             gap: 1rem;
         }
-        .sender-info strong { display: block; font-size: 1.2rem; color: var(--accent-primary); }
-        .sender-info span   { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .sender-info strong {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+        }
+
+        .sender-info span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .sender-info span a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
         .message-date {
             color: var(--text-secondary);
             font-size: 0.85rem;
             background: var(--bg-secondary);
-            padding: 0.25rem 0.75rem;
+            padding: 0.3rem 0.8rem;
             border-radius: var(--radius-full);
             height: fit-content;
         }
-        .message-phone { font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); }
-        .message-body  { color: var(--text-secondary); white-space: pre-wrap; line-height: 1.6; }
 
-        /* ---- Empty State ---- */
-        .empty-state {
-            text-align: center;
-            padding: 4rem;
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            border: 1px dashed var(--border-color);
+        .message-phone {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .message-body {
             color: var(--text-secondary);
-        }
-        .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
-
-        /* ---- Done Card ---- */
-        .done-card {
-            border-color: #10b981 !important;
-            background: rgba(16, 185, 129, 0.06) !important;
+            white-space: pre-wrap;
+            line-height: 1.6;
         }
 
-        /* ---- Status Badges ---- */
         .status-badge {
-            display: inline-block;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 600;
             padding: 0.15rem 0.6rem;
-            border-radius: 999px;
-            margin-right: 0.4rem;
-            vertical-align: middle;
+            border-radius: var(--radius-full);
         }
-        .status-badge.new  { background: rgba(59,130,246,0.15); color: #3b82f6; }
-        .status-badge.done { background: rgba(16,185,129,0.15); color: #10b981; }
 
-        /* ---- Action Buttons ---- */
+        .status-badge.new  { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .status-badge.done { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
         .btn-status {
             border: none;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            padding: 0.3rem 0.9rem;
+            padding: 0.4rem 1rem;
             border-radius: var(--radius-md);
             transition: all 0.2s;
         }
-        .done-btn   { background: rgba(16,185,129,0.15); color: #10b981; }
+
+        .done-btn   { background: rgba(16, 185, 129, 0.12); color: #10b981; }
         .done-btn:hover   { background: #10b981; color: #fff; }
-        .undone-btn { background: rgba(239,68,68,0.12); color: #ef4444; }
+        .undone-btn { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
         .undone-btn:hover { background: #ef4444; color: #fff; }
+
+        /* ---- Empty State ---- */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-secondary);
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ---- Mobile Header ---- */
+        .mobile-header {
+            display: none;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 110;
+        }
+
+        .mobile-menu-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ---- Responsive Design ---- */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: var(--sidebar-width);
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-header {
+                display: flex;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo logo-text">
-                <img src="{{ url_for('static', filename='mm_logo_transparent.png') }}" alt="Golden M Logo" class="site-logo">
-                <span class="logo-nexus">.Morvantis</span>
-            </a>
-            <nav class="nav-links" style="display:flex; gap:1rem;">
-                <a href="/" class="btn btn-outline" style="padding:0.5rem 1rem;">Back to Site</a>
-                <a href="{{ url_for('logout') }}" class="btn btn-primary" style="padding:0.5rem 1rem; background-color:#ef4444; border-color:#ef4444;">Logout <i class="fas fa-sign-out-alt"></i></a>
-            </nav>
-        </div>
-    </header>
 
-    <main>
-        <section class="dashboard-section">
-            <div class="container">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <a href="/" class="sidebar-brand" style="margin-bottom: 0;">
+            <img src="{{ url_for('static', filename='mm_logo_transparent.png') }}" alt="Morvantis Logo" style="height: 38px;">
+            <span class="logo-nexus">.Morvantis</span>
+        </a>
+        <button class="mobile-menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 
-                <!-- Page Title -->
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+    <div class="dashboard-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <!-- Brand Logo -->
+                <a href="/" class="sidebar-brand">
+                    <img src="{{ url_for('static', filename='mm_logo_transparent.png') }}" alt="Morvantis Logo" class="sidebar-logo">
+                    <span class="logo-nexus">.Morvantis</span>
+                </a>
+
+                <!-- Navigation Menu -->
+                <nav class="sidebar-menu">
+                    <button class="menu-item active" onclick="switchTab('overview', this)">
+                        <i class="fas fa-chart-pie"></i> Overview
+                    </button>
+                    <button class="menu-item" onclick="switchTab('messages', this)">
+                        <i class="fas fa-envelope"></i> Inbox
+                        <span class="menu-badge">{{ messages|length }}</span>
+                    </button>
+                    <button class="menu-item" onclick="switchTab('blocked', this)">
+                        <i class="fas fa-ban"></i> Blocked IPs
+                        <span class="menu-badge">{{ blocked_ips|length }}</span>
+                    </button>
+                    <button class="menu-item" onclick="switchTab('settings', this)">
+                        <i class="fas fa-sliders-h"></i> Settings
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer Buttons -->
+            <div class="sidebar-footer">
+                <a href="/" class="menu-item">
+                    <i class="fas fa-arrow-left"></i> Back to Site
+                </a>
+                <a href="{{ url_for('logout') }}" class="menu-item" style="color: #ef4444;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Alert Flash Notification -->
+            {% with alerts = get_flashed_messages(with_categories=true) %}
+              {% if alerts %}
+                {% for category, message in alerts %}
+                  <div style="padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-md); background: {% if category == 'error' %}rgba(239,68,68,0.1){% else %}rgba(16,185,129,0.1){% endif %}; color: {% if category == 'error' %}#ef4444{% else %}#10b981{% endif %}; border: 1px solid {% if category == 'error' %}#ef4444{% else %}#10b981{% endif %};">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <!-- Tab PANEL: Overview / Analytics -->
+            <div id="tab-overview" class="tab-panel active">
+                <div class="content-header">
+                    <h1 class="page-title"><i class="fas fa-chart-bar"></i> Analytics & Overview</h1>
                 </div>
 
-                <!-- Flash Messages -->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                  {% if messages %}
-                    {% for category, message in messages %}
-                      <div style="padding: 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-md); background: {% if category == 'error' %}rgba(239,68,68,0.1){% else %}rgba(16,185,129,0.1){% endif %}; color: {% if category == 'error' %}#ef4444{% else %}#10b981{% endif %}; border: 1px solid {% if category == 'error' %}#ef4444{% else %}#10b981{% endif %};">
-                        {{ message }}
-                      </div>
-                    {% endfor %}
-                  {% endif %}
-                {% endwith %}
-
-                <!-- Stats Bar -->
-                <div class="stats-bar">
+                <!-- Stats Cards Grid -->
+                <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon blue"><i class="fas fa-inbox"></i></div>
-                        <div class="stat-info">
+                        <div class="stat-icon blue"><i class="fas fa-eye"></i></div>
+                        <div class="stat-details">
+                            <span>Total Page Views</span>
+                            <strong>{{ total_views }}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-users"></i></div>
+                        <div class="stat-details">
+                            <span>Unique Visitors</span>
+                            <strong>{{ unique_visitors }}</strong>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-envelope"></i></div>
+                        <div class="stat-details">
                             <span>Total Messages</span>
                             <strong>{{ messages|length }}</strong>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon red"><i class="fas fa-ban"></i></div>
-                        <div class="stat-info">
-                            <span>Blocked Users</span>
+                        <div class="stat-icon red"><i class="fas fa-user-slash"></i></div>
+                        <div class="stat-details">
+                            <span>Blocked Spammers</span>
                             <strong>{{ blocked_ips|length }}</strong>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon green"><i class="fas fa-shield-alt"></i></div>
-                        <div class="stat-info">
-                            <span>Security Status</span>
-                            <strong style="font-size:1rem; color:#10b981;">Active</strong>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Tabs -->
-                <div class="tabs-wrapper">
-                    <button class="tab-btn active" onclick="switchTab('messages', this)">
-                        <i class="fas fa-envelope"></i> Inbox
-                        <span class="tab-badge">{{ messages|length }}</span>
-                    </button>
-                    <button class="tab-btn" onclick="switchTab('blocked', this)">
-                        <i class="fas fa-ban"></i> Blocked Users
-                        <span class="tab-badge">{{ blocked_ips|length }}</span>
-                    </button>
-                    <button class="tab-btn" onclick="switchTab('settings', this)">
-                        <i class="fas fa-cog"></i> Settings
-                    </button>
+                <!-- Welcome Card -->
+                <div class="message-card">
+                    <h2 style="margin-bottom: 0.5rem; color: var(--text-primary);">أهلاً بك يا مينا!</h2>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">لوحة التحكم الآن مزودة بـ **نظام تحليل زوار ذكي** يسجل عدد المشاهدات الكلية والزوار الفريدين للموقع تلقائياً عند الدخول على الصفحة الرئيسية.</p>
                 </div>
-
-                <!-- Tab: Messages -->
-                <div id="tab-messages" class="tab-panel active">
-                    <div style="margin-bottom: 1.5rem;">
-                        <input type="text" id="searchInput" placeholder="Search by name or email..." onkeyup="filterMessages()" style="width: 100%; max-width: 400px; padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-family: var(--font-primary);">
-                    </div>
-                    <div class="messages-container">
-                        {% if messages %}
-                            {% for msg in messages %}
-                            <div class="message-card {% if msg.status == 'done' %}done-card{% endif %}">
-                                <div class="message-header">
-                                    <div class="sender-info">
-                                        <strong>
-                                            {{ msg.name }}
-                                            {% if msg.status == 'done' %}
-                                            <span class="status-badge done">✔ خلصنا</span>
-                                            {% else %}
-                                            <span class="status-badge new">● جديد</span>
-                                            {% endif %}
-                                        </strong>
-                                        <span><i class="fas fa-envelope"></i> <a href="mailto:{{ msg.email }}">{{ msg.email }}</a></span>
-                                    </div>
-                                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
-                                        <div class="message-date">
-                                            <i class="fas fa-clock"></i> {{ msg.timestamp }}
-                                        </div>
-                                        {% if msg.status == 'done' %}
-                                        <form action="{{ url_for('mark_undone', msg_id=msg.id) }}" method="POST" style="margin:0;">
-                                            <button type="submit" class="btn-status undone-btn">↩ رجّع كجديد</button>
-                                        </form>
-                                        {% else %}
-                                        <form action="{{ url_for('mark_done', msg_id=msg.id) }}" method="POST" style="margin:0;">
-                                            <button type="submit" class="btn-status done-btn">✔ خلصنا</button>
-                                        </form>
-                                        {% endif %}
-                                        <form action="{{ url_for('delete_message', msg_id=msg.id) }}" method="POST" style="margin:0;" onsubmit="return confirm('هل أنت متأكد من حذف هذه الرسالة نهائياً؟');">
-                                            <button type="submit" class="btn-status undone-btn" style="background:transparent; border:1px solid #ef4444; color:#ef4444; margin-top:0.3rem;"><i class="fas fa-trash"></i> حذف</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                {% if msg.phone %}
-                                <div class="message-phone">
-                                    <i class="fas fa-phone"></i> {{ msg.phone }}
-                                </div>
-                                {% endif %}
-                                <div class="message-body">{{ msg.message }}</div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="empty-state">
-                                <i class="fas fa-envelope-open"></i>
-                                <h3>No messages yet</h3>
-                                <p>When someone submits the contact form, it will appear here.</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Tab: Blocked Users -->
-                <div id="tab-blocked" class="tab-panel">
-                    <div class="messages-container">
-                        {% if blocked_ips %}
-                            {% for block in blocked_ips %}
-                            <div class="message-card blocked">
-                                <div class="message-header" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">
-                                    <div class="sender-info">
-                                        <strong style="color:#ef4444;"><i class="fas fa-user-slash"></i> IP: {{ block.ip_address }}</strong>
-                                        <span>Reason: {{ block.reason }}</span>
-                                    </div>
-                                    <div style="display:flex; gap:1rem; align-items:center;">
-                                        <div class="message-date">
-                                            <i class="fas fa-clock"></i> {{ block.timestamp }}
-                                        </div>
-                                        <form action="{{ url_for('unblock', ip=block.ip_address) }}" method="POST" style="margin:0;">
-                                            <button type="submit" class="btn btn-primary" style="background-color:#10b981; border-color:#10b981; padding:0.25rem 1rem; font-size:0.9rem;">
-                                                Unblock <i class="fas fa-unlock"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="empty-state">
-                                <i class="fas fa-shield-alt" style="color:#10b981;"></i>
-                                <h3>No blocked users</h3>
-                                <p>Your site is clean — no spammers detected.</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Tab: Settings -->
-                <div id="tab-settings" class="tab-panel">
-                    <div class="message-card" style="max-width: 500px; margin: 0 auto;">
-                        <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);"><i class="fas fa-key"></i> Change Password</h2>
-                        <form action="{{ url_for('change_password') }}" method="POST" class="contact-form" style="box-shadow: none; padding: 0; border: none; background: transparent;">
-                            <div class="form-group">
-                                <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">Current Password</label>
-                                <input type="password" name="current_password" required style="width:100%; padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
-                            </div>
-                            <div class="form-group">
-                                <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">New Password</label>
-                                <input type="password" name="new_password" required style="width:100%; padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Update Password</button>
-                        </form>
-                    </div>
-                </div>
-
             </div>
-        </section>
-    </main>
 
+            <!-- Tab PANEL: Inbox Messages -->
+            <div id="tab-messages" class="tab-panel">
+                <div class="content-header">
+                    <h1 class="page-title"><i class="fas fa-envelope-open-text"></i> Message Inbox</h1>
+                    <input type="text" id="searchInput" placeholder="Search messages..." onkeyup="filterMessages()" style="padding: 0.6rem 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); min-width: 250px;">
+                </div>
+
+                <div class="messages-container">
+                    {% if messages %}
+                        {% for msg in messages %}
+                        <div class="message-card {% if msg.status == 'done' %}done-card{% endif %}">
+                            <div class="message-header">
+                                <div class="sender-info">
+                                    <strong>
+                                        {{ msg.name }}
+                                        {% if msg.status == 'done' %}
+                                        <span class="status-badge done">✔ خلصنا</span>
+                                        {% else %}
+                                        <span class="status-badge new">● جديد</span>
+                                        {% endif %}
+                                    </strong>
+                                    <span><i class="fas fa-envelope"></i> <a href="mailto:{{ msg.email }}">{{ msg.email }}</a></span>
+                                </div>
+                                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
+                                    <div class="message-date">
+                                        <i class="fas fa-clock"></i> {{ msg.timestamp }}
+                                    </div>
+                                    {% if msg.status == 'done' %}
+                                    <form action="{{ url_for('mark_undone', msg_id=msg.id) }}" method="POST" style="margin:0;">
+                                        <button type="submit" class="btn-status undone-btn">↩ رجّع كجديد</button>
+                                    </form>
+                                    {% else %}
+                                    <form action="{{ url_for('mark_done', msg_id=msg.id) }}" method="POST" style="margin:0;">
+                                        <button type="submit" class="btn-status done-btn">✔ خلصنا</button>
+                                    </form>
+                                    {% endif %}
+                                    <form action="{{ url_for('delete_message', msg_id=msg.id) }}" method="POST" style="margin:0;" onsubmit="return confirm('هل أنت متأكد من حذف هذه الرسالة نهائياً؟');">
+                                        <button type="submit" class="btn-status undone-btn" style="background:transparent; border:1px solid #ef4444; color:#ef4444; margin-top:0.3rem;"><i class="fas fa-trash"></i> حذف</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% if msg.phone %}
+                            <div class="message-phone">
+                                <i class="fas fa-phone"></i> {{ msg.phone }}
+                            </div>
+                            {% endif %}
+                            <div class="message-body">{{ msg.message }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-envelope-open"></i>
+                            <h3>No messages yet</h3>
+                            <p>When someone submits the contact form, it will appear here.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tab PANEL: Blocked IPs -->
+            <div id="tab-blocked" class="tab-panel">
+                <div class="content-header">
+                    <h1 class="page-title"><i class="fas fa-user-slash"></i> Blocked IP Addresses</h1>
+                </div>
+
+                <div class="messages-container">
+                    {% if blocked_ips %}
+                        {% for block in blocked_ips %}
+                        <div class="message-card blocked">
+                            <div class="message-header" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">
+                                <div class="sender-info">
+                                    <strong style="color:#ef4444;"><i class="fas fa-shield-alt"></i> IP: {{ block.ip_address }}</strong>
+                                    <span style="margin-top:0.5rem; display:block;">Reason: {{ block.reason }}</span>
+                                </div>
+                                <div style="display:flex; gap:1rem; align-items:center;">
+                                    <div class="message-date">
+                                        <i class="fas fa-clock"></i> {{ block.timestamp }}
+                                    </div>
+                                    <form action="{{ url_for('unblock', ip=block.ip_address) }}" method="POST" style="margin:0;">
+                                        <button type="submit" class="btn btn-primary" style="background-color:#10b981; border-color:#10b981; padding:0.4rem 1rem; font-size:0.9rem;">
+                                            Unblock <i class="fas fa-unlock"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-shield-alt" style="color:#10b981;"></i>
+                            <h3>No blocked users</h3>
+                            <p>Your site is clean — no spammers detected.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tab PANEL: Settings -->
+            <div id="tab-settings" class="tab-panel">
+                <div class="content-header">
+                    <h1 class="page-title"><i class="fas fa-cog"></i> Account Settings</h1>
+                </div>
+
+                <div class="message-card" style="max-width: 500px; margin: 0 auto;">
+                    <h2 style="margin-bottom: 1.5rem; color: var(--text-primary); font-family: var(--font-secondary);"><i class="fas fa-key"></i> Change Password</h2>
+                    <form action="{{ url_for('change_password') }}" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary); font-size: 0.9rem; font-weight: 500;">Current Password</label>
+                            <input type="password" name="current_password" required style="width:100%; padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                        </div>
+                        <div class="form-group">
+                            <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary); font-size: 0.9rem; font-weight: 500;">New Password</label>
+                            <input type="password" name="new_password" required style="width:100%; padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; padding: 0.75rem;">Update Password</button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- UI Scripts -->
     <script>
+        // Toggle Sidebar on Mobile
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if(menuToggle && sidebar) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId, btnElement) {
+            // Hide all tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Deactivate all sidebar items
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Activate target tab panel
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            // Activate clicked button (both mobile header clone support / sidebar button)
+            if(btnElement) {
+                btnElement.classList.add('active');
+            }
+
+            // Close sidebar on mobile after clicking item
+            if(sidebar) {
+                sidebar.classList.remove('active');
+            }
+        }
+
+        // Inbox Filtering
         function filterMessages() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.querySelectorAll('#tab-messages .message-card');
@@ -383,13 +687,6 @@
                     card.style.display = "none";
                 }
             });
-        }
-
-        function switchTab(name, btn) {
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + name).classList.add('active');
-            btn.classList.add('active');
         }
     </script>
 </body>

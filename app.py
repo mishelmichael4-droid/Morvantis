@@ -114,6 +114,15 @@ def init_db():
                 )
             ''', is_pg))
             
+            c.execute(DB.fix_query('''
+                CREATE TABLE IF NOT EXISTS page_views (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ip_address TEXT,
+                    user_agent TEXT,
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''', is_pg))
+
             # Default admin user
             c.execute(DB.fix_query('SELECT * FROM admin WHERE username = ?', is_pg), ('admin',))
             if not c.fetchone():
@@ -136,6 +145,13 @@ def ratelimit_handler(e):
 
 @app.route('/')
 def index():
+    try:
+        ip = get_remote_address()
+        ua = request.headers.get('User-Agent', '')
+        with DB.get_cursor() as (c, is_pg):
+            c.execute(DB.fix_query('INSERT INTO page_views (ip_address, user_agent) VALUES (?, ?)', is_pg), (ip, ua))
+    except Exception as e:
+        print(f"Error logging page view: {e}")
     return render_template('index.html')
 
 @app.route('/submit', methods=['POST'])
@@ -198,12 +214,25 @@ def dashboard():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
+    total_views = 0
+    unique_visitors = 0
     with DB.get_cursor() as (c, is_pg):
         c.execute(DB.fix_query('SELECT * FROM messages ORDER BY timestamp DESC', is_pg))
         raw_msgs = c.fetchall()
         
         c.execute(DB.fix_query('SELECT * FROM blocked_ips ORDER BY timestamp DESC', is_pg))
         raw_blocked = c.fetchall()
+        
+        try:
+            c.execute(DB.fix_query('SELECT COUNT(*) FROM page_views', is_pg))
+            row = c.fetchone()
+            total_views = row[0] if row else 0
+            
+            c.execute(DB.fix_query('SELECT COUNT(DISTINCT ip_address) FROM page_views', is_pg))
+            row_unique = c.fetchone()
+            unique_visitors = row_unique[0] if row_unique else 0
+        except Exception as e:
+            print(f"Error loading page views stats: {e}")
 
     # Format timestamps
     messages = []
@@ -218,7 +247,7 @@ def dashboard():
         b['timestamp'] = format_time(b['timestamp'])
         blocked_ips.append(b)
     
-    return render_template('dashboard.html', messages=messages, blocked_ips=blocked_ips)
+    return render_template('dashboard.html', messages=messages, blocked_ips=blocked_ips, total_views=total_views, unique_visitors=unique_visitors)
 
 @app.route('/done/<int:msg_id>', methods=['POST'])
 def mark_done(msg_id):
