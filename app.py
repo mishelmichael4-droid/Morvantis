@@ -90,11 +90,12 @@ def init_db():
                 )
             ''', is_pg))
             
-            # Add status column if upgrading from old DB
-            try:
-                c.execute(DB.fix_query('ALTER TABLE messages ADD COLUMN status TEXT DEFAULT \'new\'', is_pg))
-            except Exception:
-                pass
+            # Add status column if upgrading from old DB (SQLite only)
+            if not is_pg:
+                try:
+                    c.execute('ALTER TABLE messages ADD COLUMN status TEXT DEFAULT \'new\'')
+                except Exception:
+                    pass
 
             c.execute(DB.fix_query('''
                 CREATE TABLE IF NOT EXISTS blocked_ips (
