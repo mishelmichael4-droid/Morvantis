@@ -23,6 +23,36 @@ def format_time(ts):
 app = Flask(__name__)
 app.secret_key = 'super_secret_mina_key_2026'
 
+# Secure Cookies & Session configurations
+app.config.update(
+    SESSION_COOKIE_SECURE=os.environ.get('VERCEL') == '1',
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    PERMANENT_SESSION_LIFETIME=timedelta(minutes=30)
+)
+
+# CSRF Protection for state-changing requests
+@app.before_request
+def csrf_protect():
+    if request.method in ["POST", "PUT", "DELETE"]:
+        referer = request.headers.get("Referer")
+        if not referer:
+            return jsonify({'error': 'CSRF Protection: Referer header missing.'}), 403
+            
+        from urllib.parse import urlparse
+        ref_host = urlparse(referer).netloc
+        req_host = request.host
+        if ref_host != req_host:
+            return jsonify({'error': 'CSRF Protection: Cross-origin request blocked.'}), 403
+
+# Clickjacking and MIME sniffing protections
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
+
 # Setup Limiter (Anti-Spam)
 limiter = Limiter(
     get_remote_address,
